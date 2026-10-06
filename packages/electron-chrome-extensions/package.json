@@ -1,6 +1,6 @@
 {
   "name": "@seidnerj/electron-chrome-extensions",
-  "version": "4.10.0-seidnerj.1",
+  "version": "4.10.0-seidnerj.2",
   "description": "Chrome extension support for Electron",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",

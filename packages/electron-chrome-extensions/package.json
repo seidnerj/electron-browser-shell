@@ -1,6 +1,6 @@
 {
-  "name": "electron-chrome-extensions",
-  "version": "4.9.0",
+  "name": "@seidnerj/electron-chrome-extensions",
+  "version": "4.10.0-seidnerj.1",
   "description": "Chrome extension support for Electron",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",
@@ -35,7 +35,10 @@
     "chrome",
     "extensions"
   ],
-  "repository": "https://github.com/samuelmaddock/electron-browser-shell",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelmaddock/electron-browser-shell.git"
+  },
   "author": "Samuel Maddock <sam@samuelmaddock.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
@@ -57,5 +60,7 @@
     "typescript": "^4.9.4",
     "walkdir": "^0.4.1"
   },
-  "peerDependencies": {}
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

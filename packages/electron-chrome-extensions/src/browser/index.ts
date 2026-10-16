@@ -32,7 +32,21 @@ function checkVersion() {
 }
 
 function resolvePreloadPath(modulePath?: string) {
-  // Attempt to resolve preload path from module exports
+  const preloadFilename = 'chrome-extension-api.preload.js'
+
+  // Prefer the preload shipped beside this module. The entry lives in dist/cjs
+  // or dist/esm while the preload is built to dist/. Resolving by package name
+  // first can pick up a different copy of electron-chrome-extensions (e.g. an
+  // upstream release installed alongside this renamed fork) whose preload lacks
+  // this version's APIs.
+  const ownPreload = [
+    path.join(__dirname, preloadFilename),
+    path.join(__dirname, '..', preloadFilename),
+  ].find((candidate) => existsSync(candidate))
+  if (ownPreload) return ownPreload
+
+  // Bundled into an app: __dirname no longer points at the package, so resolve
+  // the preload through module exports.
   try {
     return createRequire(__dirname).resolve('electron-chrome-extensions/preload')
   } catch (error) {
@@ -40,8 +54,6 @@ function resolvePreloadPath(modulePath?: string) {
       console.error(error)
     }
   }
-
-  const preloadFilename = 'chrome-extension-api.preload.js'
 
   // Deprecated: use modulePath if provided
   if (modulePath) {
@@ -52,13 +64,8 @@ function resolvePreloadPath(modulePath?: string) {
     return path.join(modulePath, 'dist', preloadFilename)
   }
 
-  // Fallback to preload relative to entrypoint directory. The bundled entry
-  // lives in dist/cjs or dist/esm while the preload is built to dist/.
-  const candidates = [
-    path.join(__dirname, preloadFilename),
-    path.join(__dirname, '..', preloadFilename),
-  ]
-  return candidates.find((candidate) => existsSync(candidate)) || candidates[0]
+  // Not found anywhere; prependPreload reports the missing file.
+  return path.join(__dirname, preloadFilename)
 }
 
 export interface ChromeExtensionOptions extends ChromeExtensionImpl {
